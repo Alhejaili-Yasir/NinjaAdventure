@@ -31,15 +31,8 @@ public class EnemyAI : MonoBehaviour
         }
 
         // Apply root motion only if attacking
-        animator.applyRootMotion = animator.GetBool("isAttacking");
+       // animator.applyRootMotion = !animator.GetBool("isAttacking") && !animator.GetBool("isWalking");
     }
 
-    void OnAnimatorMove()
-    {
-        if (animator.applyRootMotion)
-        {
-            transform.position += animator.deltaPosition;
-            transform.rotation = animator.rootRotation;
-        }
-    }
+
 }

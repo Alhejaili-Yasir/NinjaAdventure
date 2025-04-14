@@ -9,12 +9,21 @@ public class ScrollCollector : MonoBehaviour
     [Header("Score")]
     public int score = 0;
 
+    [Header("Audio")]
+    public AudioSource collectSound;
+
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Scroll"))
         {
             score += 1;
             UpdateScoreUI();
+
+            if (collectSound != null && !collectSound.isPlaying)
+            {
+                collectSound.Play();
+            }
+
             Destroy(other.gameObject);
         }
     }
@@ -23,7 +32,7 @@ public class ScrollCollector : MonoBehaviour
     {
         if (scoreText != null)
         {
-            scoreText.text = ":" + score +"/1";
+            scoreText.text = ":" + score + "/1";
         }
     }
 }
