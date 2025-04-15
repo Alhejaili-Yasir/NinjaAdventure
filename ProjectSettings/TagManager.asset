@@ -6,6 +6,9 @@ TagManager:
   tags:
   - Scroll
   - Damage
+  - AttackRange
+  - My Attack damge
+  - My Attack
   layers:
   - Default
   - TransparentFX
