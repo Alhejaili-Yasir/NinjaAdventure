@@ -11,7 +11,7 @@ public class EnemyHealthLV2 : MonoBehaviour
     private bool isDead = false;
     private AudioSource audioSource;
 
-    private static int score = 0; // ✅ Shared score across all enemies
+    private  int score = 0; // ✅ Shared score across all enemies
 
     void Start()
     {
