@@ -594,7 +594,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 554400d9063bc894eb9f4405f06d1b1e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  objectNameOrTag: AttackRange
 --- !u!1102 &4688620322979689237
 AnimatorState:
   serializedVersion: 6
