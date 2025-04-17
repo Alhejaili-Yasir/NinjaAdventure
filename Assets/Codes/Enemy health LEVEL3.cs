@@ -11,17 +11,24 @@ public class EnemyHealth : MonoBehaviour
     private bool isDead = false;
     private AudioSource audioSource;
 
-    private  int score = 0; // ✅ Shared score across all enemies
+    private static int score = 0; // ✅ Shared across all enemies
+    private static bool scoreInitialized = false; // ✅ Prevents multiple resets on scene load
 
     void Start()
     {
+        if (!scoreInitialized)
+        {
+            score = 0;
+            scoreInitialized = true;
+        }
+
         audioSource = GetComponent<AudioSource>();
         if (audioSource == null)
         {
             audioSource = gameObject.AddComponent<AudioSource>();
         }
 
-        UpdateScoreUI(); // ✅ In case you want to display the score from the start
+        UpdateScoreUI();
     }
 
     private void OnTriggerEnter(Collider other)
@@ -41,9 +48,8 @@ public class EnemyHealth : MonoBehaviour
                     audioSource.PlayOneShot(deathSound);
                 }
 
-                // ✅ Increase score and update UI
                 score++;
-                UpdateScoreUI();
+                UpdateAllScoreUIs();
 
                 Destroy(gameObject, deathSound != null ? deathSound.length : 0f);
             }
@@ -54,7 +60,16 @@ public class EnemyHealth : MonoBehaviour
     {
         if (scoreText != null)
         {
-            scoreText.text = ":" + score +"/3";
+            scoreText.text = ":" + score + "/3";
+        }
+    }
+
+    void UpdateAllScoreUIs()
+    {
+        EnemyHealth[] allEnemies = FindObjectsByType<EnemyHealth>(FindObjectsSortMode.None);
+        foreach (var enemy in allEnemies)
+        {
+            enemy.UpdateScoreUI();
         }
     }
 }

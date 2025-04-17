@@ -5,23 +5,30 @@ public class EnemyHealthLV2 : MonoBehaviour
 {
     public int maxHits = 3;
     public AudioClip deathSound;
-    public TextMeshProUGUI scoreText; // ✅ Drag your TMP text object here in the Inspector
+    public TextMeshProUGUI scoreText;
 
     private int currentHits = 0;
     private bool isDead = false;
     private AudioSource audioSource;
 
-    private  int score = 0; // ✅ Shared score across all enemies
+    private static int score = 0;
+    private static bool scoreInitialized = false;
 
     void Start()
     {
+        if (!scoreInitialized)
+        {
+            score = 0;
+            scoreInitialized = true;
+        }
+
         audioSource = GetComponent<AudioSource>();
         if (audioSource == null)
         {
             audioSource = gameObject.AddComponent<AudioSource>();
         }
 
-        UpdateScoreUI(); // ✅ In case you want to display the score from the start
+        UpdateScoreUI();
     }
 
     private void OnTriggerEnter(Collider other)
@@ -41,9 +48,8 @@ public class EnemyHealthLV2 : MonoBehaviour
                     audioSource.PlayOneShot(deathSound);
                 }
 
-                // ✅ Increase score and update UI
                 score++;
-                UpdateScoreUI();
+                UpdateAllScoreUIs();
 
                 Destroy(gameObject, deathSound != null ? deathSound.length : 0f);
             }
@@ -55,6 +61,16 @@ public class EnemyHealthLV2 : MonoBehaviour
         if (scoreText != null)
         {
             scoreText.text = ":" + score + "/3";
+        }
+    }
+
+    void UpdateAllScoreUIs()
+    {
+        // ✅ New method for Unity 2023+
+        EnemyHealthLV2[] allEnemies = FindObjectsByType<EnemyHealthLV2>(FindObjectsSortMode.None);
+        foreach (var enemy in allEnemies)
+        {
+            enemy.UpdateScoreUI();
         }
     }
 }
