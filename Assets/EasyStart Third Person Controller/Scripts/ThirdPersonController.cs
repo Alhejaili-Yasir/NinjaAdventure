@@ -1,5 +1,7 @@
 ﻿
+#if UNITY_EDITOR
 using UnityEditor.VersionControl;
+#endif
 using UnityEngine;
 
 /*

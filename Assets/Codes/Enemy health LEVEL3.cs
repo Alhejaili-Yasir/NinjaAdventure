@@ -1,7 +1,8 @@
 ﻿using UnityEngine;
+using UnityEngine.SceneManagement;
 using TMPro;
 
-public class EnemyHealth : MonoBehaviour
+public class EnemyHealthLV3 : MonoBehaviour
 {
     public int maxHits = 3;
     public AudioClip deathSound;
@@ -11,24 +12,28 @@ public class EnemyHealth : MonoBehaviour
     private bool isDead = false;
     private AudioSource audioSource;
 
-    private static int score = 0; // ✅ Shared across all enemies
-    private static bool scoreInitialized = false; // ✅ Prevents multiple resets on scene load
+    private static int score = 0; // ✅ Shared score across all enemies
+    private static bool sceneInitialized = false;
+
+    void Awake()
+    {
+        // Reset score only once per scene load
+        if (!sceneInitialized)
+        {
+            SceneManager.sceneLoaded += OnSceneLoaded;
+            sceneInitialized = true;
+        }
+    }
 
     void Start()
     {
-        if (!scoreInitialized)
-        {
-            score = 0;
-            scoreInitialized = true;
-        }
-
         audioSource = GetComponent<AudioSource>();
         if (audioSource == null)
         {
             audioSource = gameObject.AddComponent<AudioSource>();
         }
 
-        UpdateScoreUI();
+        UpdateScoreUI(); // ✅ In case you want to display the score from the start
     }
 
     private void OnTriggerEnter(Collider other)
@@ -48,8 +53,9 @@ public class EnemyHealth : MonoBehaviour
                     audioSource.PlayOneShot(deathSound);
                 }
 
+                // ✅ Increase score and update UI
                 score++;
-                UpdateAllScoreUIs();
+                UpdateScoreUI();
 
                 Destroy(gameObject, deathSound != null ? deathSound.length : 0f);
             }
@@ -64,12 +70,16 @@ public class EnemyHealth : MonoBehaviour
         }
     }
 
-    void UpdateAllScoreUIs()
+    // Called automatically when the scene is loaded
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        EnemyHealth[] allEnemies = FindObjectsByType<EnemyHealth>(FindObjectsSortMode.None);
-        foreach (var enemy in allEnemies)
-        {
-            enemy.UpdateScoreUI();
-        }
+        score = 0;
+        sceneInitialized = false; // reset for next scene load
+    }
+
+    void OnDestroy()
+    {
+        // Clean up the event subscription
+        SceneManager.sceneLoaded -= OnSceneLoaded;
     }
 }
